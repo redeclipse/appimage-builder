@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Red Eclipse
+GenericName=Awesome FPS Game
+Comment=Play the best first-person shooter in the world! Free and open-source!
+Exec=redeclipse
+TryExec=redeclipse
+Icon=redeclipse
+Terminal=false
+Categories=Games;
+StartupNotify=true

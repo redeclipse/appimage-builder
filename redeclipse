@@ -1,0 +1,6 @@
+#! ./bin/bash
+
+export REDECLIPSE_BRANCH=AppImage
+
+cd lib/redeclipse
+exec bin/amd64/redeclipse_linux
