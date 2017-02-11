@@ -152,7 +152,7 @@ fi
 
 cd $WORKSPACE
 log "generating appimage"
-generate_appimage
+generate_type2_appimage
 
 
 log "copying appimage to $OLD_CWD/out"
