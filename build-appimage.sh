@@ -67,7 +67,8 @@ fi
 apt-get install -y aptitude
 
 apt-get install -y aptitude autogen ca-certificates \
-    cmake fuse gcc g++ git make pkg-config subversion wget xz-utils rsync
+    cmake fuse gcc g++ git make pkg-config subversion wget xz-utils rsync \
+    desktop-file-utils
 
 apt-get install -t jessie -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
