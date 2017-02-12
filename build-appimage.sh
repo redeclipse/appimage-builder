@@ -25,8 +25,8 @@ export LC_ALL=C
 export LANGUAGE=C
 
 export APP=redeclipse
-export VERSION=1.5.8
-export BRANCH=v1.5.8
+export VERSION=1.5.9-beta
+export BRANCH=stable
 export ARCH=x86_64
 
 export WORKSPACE=/workspace
