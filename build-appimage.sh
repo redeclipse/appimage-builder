@@ -72,11 +72,7 @@ apt-get install -y aptitude autogen ca-certificates \
 
 apt-get install -t jessie -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
-if [ ! -f /tmp/functions.sh ]; then
-    wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh \
-        -O /tmp/functions.sh
-fi
-
+(cd /tmp && wget -Nc https://github.com/probonopd/AppImages/raw/master/functions.sh)
 . /tmp/functions.sh
 
 
@@ -126,18 +122,24 @@ cd $PREFIX
 log "downloading AppRun"
 get_apprun
 
-
 log "copying dependencies and libraries"
 copy_deps; copy_deps; copy_deps
-cp -R $DOWNLOADS/{lib,usr} $PREFIX
+rsync -avr --copy-links $DOWNLOADS/{lib,usr} $PREFIX
 move_lib
-delete_blacklisted
 mkdir -p $PREFIX/usr/bin/
-cp /bin/bash $PREFIX/usr/bin/
+rsync -av /bin/bash $PREFIX/usr/bin/
+
+
+# move PulseAudio libraries as requested in #3
+mv $PREFIX/usr/lib/x86_64-linux-gnu/pulseaudio/*.so $PREFIX/usr/lib/x86_64-linux-gnu/
+
+
+log "delete blacklisted libraries"
+(cd $PREFIX/usr/lib/ && delete_blacklisted)
 
 
 log "copying desktop file, icon and launcher"
-cp $OLD_CWD/$APP{.desktop,.png} $PREFIX
+cp $OLD_CWD/$APP{.desktop,.png} $PREFIX/
 cp $OLD_CWD/$APP $PREFIX/usr/bin/
 
 
@@ -158,4 +160,5 @@ generate_type2_appimage
 
 log "copying appimage to $OLD_CWD/out"
 mkdir -p $OLD_CWD/out
-cp $WORKSPACE/../out/*.AppImage $OLD_CWD/out
+rsync -avP $WORKSPACE/../out/*.AppImage $OLD_CWD/out
+chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
