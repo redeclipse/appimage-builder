@@ -1,6 +1,8 @@
 #! ./bin/bash
 
-export REDECLIPSE_BRANCH=AppImage
+# fix library path (see #3)
+export LD_LIBRARY_PATH=$(readlink -f lib/):$(readlink -f lib/x86_64-linux-gnu/)
 
 cd lib/redeclipse
+export REDECLIPSE_BRANCH=AppImage
 exec bin/amd64/redeclipse_linux $@
