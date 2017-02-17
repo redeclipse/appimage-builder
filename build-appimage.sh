@@ -136,6 +136,7 @@ mv $PREFIX/usr/lib/x86_64-linux-gnu/pulseaudio/*.so $PREFIX/usr/lib/x86_64-linux
 
 log "delete blacklisted libraries"
 (cd $PREFIX/usr/lib/ && delete_blacklisted)
+rm -v $PREFIX/usr/lib/x86_64-linux-gnu/lib{xcb,GL,drm,X}*.so.* || true
 
 
 log "copying desktop file, icon and launcher"
