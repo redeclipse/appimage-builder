@@ -156,10 +156,15 @@ fi
 
 cd $WORKSPACE
 log "generating appimage"
+
+[ ! -d $OLD_CWD/out ] && mkdir -p $OLD_CWD/out
+
+if [ ! -L $WORKSPACE/../out ]; then
+    pushd $WORKSPACE/..
+    ln -s $(readlink -f $OLD_CWD/out)
+    popd
+fi
+
 generate_type2_appimage
 
-
-log "copying appimage to $OLD_CWD/out"
-mkdir -p $OLD_CWD/out
-rsync -avP $WORKSPACE/../out/*.AppImage $OLD_CWD/out
 chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
