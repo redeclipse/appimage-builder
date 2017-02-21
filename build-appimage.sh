@@ -25,8 +25,8 @@ export LC_ALL=C
 export LANGUAGE=C
 
 export APP=redeclipse
-export VERSION=1.5.9-beta
-export BRANCH=stable
+export VERSION=${VERSION:-1.5.9-beta}
+export BRANCH=${BRANCH:-stable}
 export ARCH=x86_64
 
 export WORKSPACE=/workspace
@@ -34,6 +34,8 @@ export PREFIX=$WORKSPACE/redeclipse.AppDir
 export DOWNLOADS=$WORKSPACE/downloads
 export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
+
+log "VERSION: $VERSION -- BRANCH: $BRANCH"
 
 
 if [ -d $WORKSPACE ]; then
@@ -94,12 +96,13 @@ done
 cd $BUILD
 log "building Red Eclipse"
 if [ ! -d .git ]; then
-    git clone https://github.com/red-eclipse/base.git -b $BRANCH --recursive .
+    git clone https://github.com/red-eclipse/base.git -n .
 else
+    git reset --hard HEAD
     git fetch
-    git checkout $BRANCH
-    git submodule update
 fi
+git checkout $BRANCH
+git submodule update --init
 make -C src install-client
 
 
@@ -167,4 +170,5 @@ fi
 
 generate_type2_appimage
 
+[ "$SUDO_UID" == "" ] && export SUDO_UID=1000 && export SUDO_GID=1000
 chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
