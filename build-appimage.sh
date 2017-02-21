@@ -66,8 +66,6 @@ if [ ! -f $backports ]; then
     apt-get update
 fi
 
-apt-get install -y aptitude
-
 apt-get install -y aptitude autogen ca-certificates \
     cmake fuse gcc g++ git make pkg-config subversion wget xz-utils rsync \
     desktop-file-utils
