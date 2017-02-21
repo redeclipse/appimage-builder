@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  builder:
+    image: "debian:wheezy"
+    command: /bin/bash -c "cd /vagrant && ./build-appimage.sh"
+    environment:
+      - "VERSION"
+      - "BRANCH"
+      - "ARCH"
+      - "REPO_URL"
+    cap_add:
+      - "SYS_ADMIN"
+    devices:
+      - "/dev/fuse:mrw"
+    volumes:
+      - ".:/vagrant"
+    security_opt:
+      - "apparmor:unconfined"
