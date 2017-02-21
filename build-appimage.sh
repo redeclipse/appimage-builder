@@ -66,11 +66,12 @@ if [ ! -f $backports ]; then
     apt-get update
 fi
 
-apt-get install -y aptitude autogen ca-certificates \
+apt-get install -y --no-install-recommends aptitude autogen ca-certificates \
     cmake fuse gcc g++ git make pkg-config subversion wget xz-utils rsync \
     desktop-file-utils
 
-apt-get install -t jessie -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+apt-get install -t jessie -y --no-install-recommends libsdl2-dev \
+    libsdl2-image-dev libsdl2-mixer-dev
 
 (cd /tmp && wget -Nc https://github.com/probonopd/AppImages/raw/master/functions.sh)
 . /tmp/functions.sh
