@@ -23,14 +23,17 @@ export DEBIAN_FRONTEND=noninteractive
 export TERM=xterm-256color
 export LC_ALL=C
 export LANGUAGE=C
+export SUDO_UID=${SUDO_UID:-1000}
+export SUDO_GID=${SUDO_GID:-1000}
 
-export APP=redeclipse
+export APP=${APP:-redeclipse}
 export VERSION=${VERSION:-1.5.9-beta}
 export BRANCH=${BRANCH:-stable}
-export ARCH=x86_64
+export ARCH=${ARCH:-x86_64}
+export REPO_URL=${REPO_URL:-https://github.com/red-eclipse/base.git}
 
 export WORKSPACE=/workspace
-export PREFIX=$WORKSPACE/redeclipse.AppDir
+export PREFIX=$WORKSPACE/$APP.AppDir
 export DOWNLOADS=$WORKSPACE/downloads
 export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
@@ -169,5 +172,6 @@ fi
 
 generate_type2_appimage
 
-[ "$SUDO_UID" == "" ] && export SUDO_UID=1000 && export SUDO_GID=1000
+
+log "fix AppImage permissions"
 chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
