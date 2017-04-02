@@ -4,5 +4,5 @@
 export LD_LIBRARY_PATH=$(readlink -f lib/):$(readlink -f lib/x86_64-linux-gnu/)
 
 cd lib/redeclipse
-export REDECLIPSE_BRANCH=AppImage
+export REDECLIPSE_BRANCH=AppImage-_BRANCH_
 exec bin/amd64/redeclipse_linux $@

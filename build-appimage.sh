@@ -11,14 +11,6 @@ log() {
 
 OLD_CWD="$(pwd)"
 
-if [ $(id -u) -ne 0 ]; then
-    tput setaf 1
-    tput bold
-    echo "Error: this script must be run as root!"
-    tput sgr0
-    exit 1
-fi
-
 export DEBIAN_FRONTEND=noninteractive
 export TERM=xterm-256color
 export LC_ALL=C
@@ -26,69 +18,41 @@ export LANGUAGE=C
 export SUDO_UID=${SUDO_UID:-1000}
 export SUDO_GID=${SUDO_GID:-1000}
 
-export APP=${APP:-redeclipse}
-export VERSION=${VERSION:-1.5.9-beta}
+export APP=redeclipse
 export BRANCH=${BRANCH:-stable}
 export ARCH=${ARCH:-x86_64}
 export REPO_URL=${REPO_URL:-https://github.com/red-eclipse/base.git}
+# parsed automatically unless they are already set
+export VERSION
+export COMMIT
 
-export WORKSPACE=/workspace
+export WORKSPACE=$(readlink -f workspace)
 export PREFIX=$WORKSPACE/$APP.AppDir
 export DOWNLOADS=$WORKSPACE/downloads
 export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
 
-log "VERSION: $VERSION -- BRANCH: $BRANCH"
-
-
-if [ -d $WORKSPACE ]; then
-    tput setaf 3
-    tput bold
-    echo "Warning: workspace $WORKSPACE already exists!"
-    tput sgr0
-    read -p "Do you want to purge the workspace before continuing? [y|N] " -r
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        log "purging workspace $workspace"
-        rm -rf $WORKSPACE
-    fi
-fi
+log "VERSION: ${VERSION:(parsed later from source code)} -- BRANCH: $BRANCH"
 
 
 log "preparing environment"
 mkdir -p $WORKSPACE $PREFIX $DOWNLOADS $BUILD
 
-
 cd $WORKSPACE
-log "installing dependencies"
+wget -Nc https://github.com/probonopd/AppImages/raw/master/functions.sh
+. functions.sh
 
-backports=/etc/apt/sources.list.d/jessie.list
-if [ ! -f $backports ]; then
-    log "enabling jessie repository"
-    echo "deb http://http.debian.net/debian jessie main" > $backports
-    echo 'APT::Default-Release "stable";' > /etc/apt/apt.conf.d/99defaultrelease
-    apt-get update
-fi
 
-apt-get install -y --no-install-recommends aptitude autogen ca-certificates \
-    cmake fuse gcc g++ git make pkg-config subversion wget xz-utils rsync \
-    desktop-file-utils
-
-apt-get install -t jessie -y --no-install-recommends libsdl2-dev \
-    libsdl2-image-dev libsdl2-mixer-dev
-
-(cd /tmp && wget -Nc https://github.com/probonopd/AppImages/raw/master/functions.sh)
-. /tmp/functions.sh
-
+log "downloading and extracting deb files"
 
 cd $DOWNLOADS
-log "downloading and extracting deb files"
-aptitude download libasound2 libsdl2-2.0-0 libsdl2-image-2.0-0 \
-    libsdl2-mixer-2.0-0 zlib1g libjpeg62 libpng12-0 libflac8 libogg0 \
+apt-get download libasound2 libsdl2-2.0-0 libsdl2-image-2.0-0 \
+    libsdl2-mixer-2.0-0 zlib1g libjpeg62 libpng12-0  libflac8 libogg0 \
     libvorbis0a libpciaccess0 libdrm2 libxcb-dri2-0 libxcb-dri3-0 \
-    libxcb-present0 libxcb1 libxau6 libxext6 \
-    libx11-6 libx11-xcb1 libxfixes3 libxcb-xfixes0 \
-    libxdamage1 libexpat1 libegl1-mesa libgl1-mesa-dri libgl1-mesa-glx \
-    libglapi-mesa libgles2-mesa libglu1-mesa libtinfo5
+    libxcb-present0 libxcb1 libxau6 libxext6  libx11-6 libx11-xcb1 \
+    libxfixes3 libxcb-xfixes0 libxdamage1 libexpat1 libegl1-mesa \
+    libgl1-mesa-dri libgl1-mesa-glx libglapi-mesa libgles2-mesa libglu1-mesa \
+    libtinfo5
 
 for package in *.deb; do
     dpkg-deb -x $package .
@@ -96,16 +60,33 @@ done
 
 
 cd $BUILD
-log "building Red Eclipse"
 if [ ! -d .git ]; then
+    log "cloning Red Eclipse repository"
     git clone https://github.com/red-eclipse/base.git -n .
 else
+    log "updating Red Eclipse repository"
     git reset --hard HEAD
     git fetch
 fi
-git checkout $BRANCH
+
+git checkout ${COMMIT:-$BRANCH}
 git submodule update --init
-make -C src install-client
+
+export VERSION=${VERSION:-$(cat src/engine/version.h | grep VERSION_STRING | cut -d'"' -f2)}
+export COMMIT=${COMMIT:-$(git rev-parse --short HEAD)}
+
+
+log "building Red Eclipse binaries"
+pushd src
+
+[ ! -d build ] && mkdir build
+
+pushd build
+cmake .. -G Ninja
+ninja -v install
+popd
+
+popd
 
 
 log "copying Red Eclipse resources"
@@ -129,7 +110,7 @@ get_apprun
 
 log "copying dependencies and libraries"
 copy_deps; copy_deps; copy_deps
-rsync -avr --copy-links $DOWNLOADS/{lib,usr} $PREFIX
+rsync -av $DOWNLOADS/{lib,usr} $PREFIX
 move_lib
 mkdir -p $PREFIX/usr/bin/
 rsync -av /bin/bash $PREFIX/usr/bin/
@@ -139,7 +120,7 @@ rsync -av /bin/bash $PREFIX/usr/bin/
 mv $PREFIX/usr/lib/x86_64-linux-gnu/pulseaudio/*.so $PREFIX/usr/lib/x86_64-linux-gnu/
 
 
-log "delete blacklisted libraries"
+log "deleting blacklisted libraries"
 (cd $PREFIX/usr/lib/ && delete_blacklisted)
 rm -v $PREFIX/usr/lib/x86_64-linux-gnu/lib{xcb,GL,drm,X}*.so.* || true
 
@@ -147,31 +128,31 @@ rm -v $PREFIX/usr/lib/x86_64-linux-gnu/lib{xcb,GL,drm,X}*.so.* || true
 log "copying desktop file, icon and launcher"
 cp $OLD_CWD/$APP{.desktop,.png} $PREFIX/
 cp $OLD_CWD/$APP $PREFIX/usr/bin/
+sed -i 's/_BRANCH_/'"$BRANCH"'/g' $PREFIX/usr/bin/$APP
 
 
-log "integrating desktop file"
+log "getting desktop integration"
 get_desktopintegration $APP
-
-
-if [ ! -e /dev/fuse ]; then
-    log "setting up fuse"
-    mknod -m 666 /dev/fuse c 10 229
-fi
 
 
 cd $WORKSPACE
 log "generating appimage"
 
-[ ! -d $OLD_CWD/out ] && mkdir -p $OLD_CWD/out
+[ ! -e $OLD_CWD/out ] && mkdir -p $OLD_CWD/out
 
-if [ ! -L $WORKSPACE/../out ]; then
-    pushd $WORKSPACE/..
-    ln -s $(readlink -f $OLD_CWD/out)
-    popd
-fi
+# non-FUSE, simple replacement for generate_type2_appimage
+wget -c https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+chmod +x appimagetool-x86_64.AppImage
+./appimagetool-x86_64.AppImage --appimage-extract
 
-generate_type2_appimage
+APPIMAGE_FILENAME=${APP}-${VERSION}-${BRANCH}-${COMMIT}.AppImage
+APPIMAGE_PATH=$OLD_CWD/out/$APPIMAGE_FILENAME
+squashfs-root/AppRun -n -v $PREFIX $APPIMAGE_PATH
 
 
-log "fix AppImage permissions"
+log "fixing AppImage permissions"
 chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
+
+
+log "put update information into AppImage"
+echo "zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync" | dd of=$APPIMAGE_PATH bs=1 seek=33651 count=512 conv=notrunc 2>/dev/null
