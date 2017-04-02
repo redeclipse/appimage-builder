@@ -147,12 +147,13 @@ chmod +x appimagetool-x86_64.AppImage
 
 APPIMAGE_FILENAME=${APP}-${VERSION}-${BRANCH}-${COMMIT}.AppImage
 APPIMAGE_PATH=$OLD_CWD/out/$APPIMAGE_FILENAME
-squashfs-root/AppRun -n -v $PREFIX $APPIMAGE_PATH
+
+URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync"
+
+squashfs-root/AppRun -n -v $PREFIX $APPIMAGE_PATH -u "$URL"
+
+rm -r squashfs-root
 
 
 log "fixing AppImage permissions"
 chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
-
-
-log "put update information into AppImage"
-echo "zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync" | dd of=$APPIMAGE_PATH bs=1 seek=33651 count=512 conv=notrunc 2>/dev/null
