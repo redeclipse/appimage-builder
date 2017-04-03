@@ -32,7 +32,8 @@ export DOWNLOADS=$WORKSPACE/downloads
 export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
 
-log "VERSION: ${VERSION:'(parsed later from source code)'} -- BRANCH: $BRANCH"
+notset="(parsed later from source code)"
+log "VERSION: ${VERSION:=$notset} -- BRANCH: $BRANCH"
 
 
 log "preparing environment"
