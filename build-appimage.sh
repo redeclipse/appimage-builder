@@ -74,9 +74,9 @@ git checkout ${COMMIT:-$BRANCH}
 git submodule update --init
 
 if [ "$VERSION" == "" ]; then
-    VERSION=$(src/engine/version.h | grep VERSION_MAJOR | head -n1 | awk '{print $3}')
-    VERSION="$VERSION."$(src/engine/version.h | grep VERSION_MINOR | head -n1 | awk '{print $3}')
-    VERSION="$VERSION."$(src/engine/version.h | grep VERSION_PATCH | head -n1 | awk '{print $3}')
+    VERSION="$(src/engine/version.h | grep VERSION_MAJOR | head -n1 | awk '{print $3}')"
+    VERSION="$VERSION.$(src/engine/version.h | grep VERSION_MINOR | head -n1 | awk '{print $3}')"
+    VERSION="$VERSION.$(src/engine/version.h | grep VERSION_PATCH | head -n1 | awk '{print $3}')"
 fi
 
 export VERSION
