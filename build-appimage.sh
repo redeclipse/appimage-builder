@@ -33,7 +33,7 @@ export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
 
 notset="(parsed later from source code)"
-log "VERSION: ${VERSION:=$notset} -- BRANCH: $BRANCH"
+log "VERSION: ${VERSION:-$notset} -- BRANCH: $BRANCH"
 
 
 log "preparing environment"
