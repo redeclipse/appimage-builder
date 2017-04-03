@@ -153,7 +153,7 @@ wget -c https://github.com/probonopd/AppImageKit/releases/download/continuous/ap
 chmod +x appimagetool-x86_64.AppImage
 ./appimagetool-x86_64.AppImage --appimage-extract
 
-APPIMAGE_FILENAME=${APP}-${VERSION}-${BRANCH}-${COMMIT}.AppImage
+APPIMAGE_FILENAME=${APP}-${VERSION}-${BRANCH}-${COMMIT}-${ARCH}.AppImage
 APPIMAGE_PATH=$OLD_CWD/out/$APPIMAGE_FILENAME
 
 URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync"
