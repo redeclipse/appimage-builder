@@ -74,9 +74,9 @@ git checkout ${COMMIT:-$BRANCH}
 git submodule update --init
 
 if [ "$VERSION" == "" ]; then
-    VERSION="$(src/engine/version.h | grep VERSION_MAJOR | head -n1 | awk '{print $3}')"
-    VERSION="$VERSION.$(src/engine/version.h | grep VERSION_MINOR | head -n1 | awk '{print $3}')"
-    VERSION="$VERSION.$(src/engine/version.h | grep VERSION_PATCH | head -n1 | awk '{print $3}')"
+    VERSION="$(cat src/engine/version.h | grep VERSION_MAJOR | head -n1 | awk '{print $3}')"
+    VERSION="$VERSION.$(cat src/engine/version.h | grep VERSION_MINOR | head -n1 | awk '{print $3}')"
+    VERSION="$VERSION.$(cat src/engine/version.h | grep VERSION_PATCH | head -n1 | awk '{print $3}')"
 fi
 
 export VERSION
@@ -156,7 +156,7 @@ chmod +x appimagetool-x86_64.AppImage
 APPIMAGE_FILENAME=${APP}-${VERSION}-${BRANCH}-${COMMIT}-${ARCH}.AppImage
 APPIMAGE_PATH=$OLD_CWD/out/$APPIMAGE_FILENAME
 
-URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync"
+URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse-${BRANCH}-x86_64.AppImage.zsync"
 
 squashfs-root/AppRun -n -v -u "$URL" $PREFIX $APPIMAGE_PATH
 
