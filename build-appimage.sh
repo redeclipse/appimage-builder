@@ -32,7 +32,7 @@ export DOWNLOADS=$WORKSPACE/downloads
 export BUILD=$WORKSPACE/build
 export RE_DIR=$PREFIX/usr/lib/$APP
 
-log "VERSION: ${VERSION:(parsed later from source code)} -- BRANCH: $BRANCH"
+log "VERSION: ${VERSION:'(parsed later from source code)'} -- BRANCH: $BRANCH"
 
 
 log "preparing environment"
@@ -72,7 +72,14 @@ fi
 git checkout ${COMMIT:-$BRANCH}
 git submodule update --init
 
-export VERSION=${VERSION:-$(cat src/engine/version.h | grep VERSION_STRING | cut -d'"' -f2)}
+if [ "$VERSION" == "" ]; then
+    VERSION=$(src/engine/version.h | grep VERSION_MAJOR | head -n1 | awk '{print $3}')
+    VERSION="$VERSION."$(src/engine/version.h | grep VERSION_MINOR | head -n1 | awk '{print $3}')
+    VERSION="$VERSION."$(src/engine/version.h | grep VERSION_PATCH | head -n1 | awk '{print $3}')
+fi
+
+export VERSION
+
 export COMMIT=${COMMIT:-$(git rev-parse --short HEAD)}
 
 
