@@ -158,7 +158,7 @@ APPIMAGE_PATH=$OLD_CWD/out/$APPIMAGE_FILENAME
 
 URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse_continuous-${BRANCH}_x86_64.AppImage.zsync"
 
-squashfs-root/AppRun -n -v $PREFIX $APPIMAGE_PATH -u "$URL"
+squashfs-root/AppRun -n -v -u "$URL" $PREFIX $APPIMAGE_PATH
 
 rm -r squashfs-root
 
