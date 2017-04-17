@@ -81,7 +81,13 @@ fi
 
 export VERSION
 
-export COMMIT=${COMMIT:-$(git rev-parse --short HEAD)}
+# fall back to HEAD when no commit is given
+COMMIT=${COMMIT:-$(git rev-parse HEAD)}
+
+# shorten commit if necessary
+COMMIT=$(git rev-parse --short $COMMIT)
+
+export COMMIT
 
 
 log "building Red Eclipse binaries"
