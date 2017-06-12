@@ -11,7 +11,7 @@ cleanup() {
         return 0
     fi
 
-    if [ "$1" == "error" ]; then
+     if [ "$1" == "error" ]; then
         log "error occurred, cleaning up..."
     elif [ "$1" != "" ]; then
         log "$1 received, please wait a few seconds for cleaning up..."
@@ -46,4 +46,4 @@ docker run -it \
     -v "$(readlink -f out/):/out" \
     -e VERSION -e BRANCH -e ARCH -e REPO_URL -e SUDO_UID -e SUDO_GID \
     $imageid \
-    bash -x /build-appimage.sh
+    bash -x /build-appimages.sh

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Red Eclipse server
+GenericName=Awesome FPS Game's server
+Comment=Host your own server for the best first-person shooter in the world! Free and open-source!
+Exec=redeclipse-server
+TryExec=redeclipse-server
+Icon=redeclipse
+Terminal=true
+Categories=Games;
+StartupNotify=true
