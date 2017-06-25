@@ -36,7 +36,7 @@ imageid="redeclipse-appimage-build"
 log "Building Docker container"
 (set -xe; docker build -t $imageid .)
 
-export VERSION BRANCH ARCH REPO_URL SUDO_UID SUDO_GID
+export VERSION BRANCH ARCH REPO_URL SUDO_UID SUDO_GID BUILD_CLIENT BUILD_SERVER
 
 log "Creating container $containerid"
 mkdir -p workspace/ out/
@@ -44,6 +44,6 @@ set -xe
 docker run -it \
     --name $containerid \
     -v "$(readlink -f out/):/out" \
-    -e VERSION -e BRANCH -e ARCH -e REPO_URL -e SUDO_UID -e SUDO_GID \
+    -e VERSION -e BRANCH -e ARCH -e REPO_URL -e SUDO_UID -e SUDO_GID -e BUILD_CLIENT -e BUILD_SERVER \
     $imageid \
     bash -x /build-appimages.sh
