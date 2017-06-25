@@ -153,11 +153,11 @@ cp $BUILD/bin/amd64/redeclipse_linux $APPDIR/usr/bin/redeclipse || true
 cp $BUILD/bin/amd64/redeclipse_server_linux $APPDIR/usr/bin/redeclipse-server || true
 
 log "Copy desktop files"
-cp $OLD_CWD/redeclipse*.desktop $APPDIR/usr/share/applications/
+cp $OLD_CWD/redeclipse.desktop $OLD_CWD/redeclipse-server.desktop $APPDIR/usr/share/applications/
 
 
 log "Create $OLD_CWD/out"
-[ ! -e $OLD_CWD/out ] && mkdir -p $OLD_CWD/out
+mkdir -p $OLD_CWD/out
 
 
 CLIENT_URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse-${BRANCH}-x86_64.AppImage.zsync"
@@ -184,13 +184,6 @@ if [ $BUILD_CLIENT -gt 0 ]; then
     rm $APPDIR/AppRun
     cp $OLD_CWD/AppRun $APPDIR/
     sed -i "s/_BRANCH_/$BRANCH/g" $APPDIR/AppRun
-
-
-
-    if [ $BUILD_SERVER -gt 0 ]; then
-        log "Patch server AppRun script"
-        sed -i 's|./redeclipse|./redeclipse-server|g' $APPDIR/AppRun
-    fi
 
     log "Run appimagetool"
     appimagetool -n -v --exclude-file $OLD_CWD/redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
