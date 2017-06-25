@@ -28,5 +28,6 @@ COPY redeclipse.desktop /redeclipse.desktop
 COPY redeclipse-server.desktop /redeclipse-server.desktop
 COPY redeclipse.png /redeclipse.png
 COPY build-appimages.sh /build-appimages.sh
+COPY *.ignore /
 
 USER 1000
