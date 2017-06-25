@@ -193,7 +193,7 @@ if [ $BUILD_CLIENT -gt 0 ]; then
     fi
 
     log "Run appimagetool"
-    appimagetool -n -v --exclude-file /redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
+    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
 fi
 
 if [ $BUILD_SERVER -gt 0 ]; then
@@ -214,7 +214,7 @@ if [ $BUILD_SERVER -gt 0 ]; then
     sed -i 's|./redeclipse|./redeclipse-server|g' $APPDIR/AppRun
 
     log "Run appimagetool"
-    appimagetool -n -v --exclude-file /redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
+    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
 fi
 
 log "Fix AppImages' permissions"
