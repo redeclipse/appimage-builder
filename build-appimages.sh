@@ -15,8 +15,8 @@ export DEBIAN_FRONTEND=noninteractive
 export TERM=xterm-256color
 export LC_ALL=C
 export LANGUAGE=C
-export SUDO_UID=${SUDO_UID:-1000}
-export SUDO_GID=${SUDO_GID:-1000}
+export CHUID=${CHUID:-$UID}
+export CHGID=${CHGID:-$GID}
 
 export BRANCH=${BRANCH:-stable}
 export ARCH=${ARCH:-x86_64}
@@ -209,6 +209,3 @@ if [ $BUILD_SERVER -gt 0 ]; then
     log "Run appimagetool"
     appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
 fi
-
-log "Fix AppImages' permissions"
-chown $SUDO_UID:$SUDO_GID $OLD_CWD/out/*.AppImage
