@@ -39,7 +39,7 @@ log "Building Docker container"
 export VERSION BRANCH ARCH REPO_URL BUILD_CLIENT BUILD_SERVER
 
 log "Creating container $containerid"
-mkdir -p worspace/ out/
+mkdir -p out/
 chmod o+rwx,u+s out/
 set -xe
 docker run -it \
