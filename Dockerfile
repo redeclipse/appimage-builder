@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM debian:oldstable
 
 MAINTAINER "TheAssassin <theassassin@users.noreply.github.com>"
 
