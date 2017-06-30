@@ -15,8 +15,6 @@ export DEBIAN_FRONTEND=noninteractive
 export TERM=xterm-256color
 export LC_ALL=C
 export LANGUAGE=C
-export CHUID=${CHUID:-$UID}
-export CHGID=${CHGID:-$GID}
 
 export BRANCH=${BRANCH:-stable}
 export ARCH=${ARCH:-x86_64}
@@ -117,8 +115,9 @@ pushd $BUILD/src
 mkdir -p build
 
 pushd build
-cmake .. -G Ninja || (rm -r * && cmake .. -G Ninja)
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release || (rm -r * && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release)
 ninja -v install
+ninja -v clean
 popd
 
 popd
@@ -209,3 +208,6 @@ if [ $BUILD_SERVER -gt 0 ]; then
     log "Run appimagetool"
     appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
 fi
+
+log "Fixing AppImages' permissions"
+chmod 0755 $OLD_CWD/out/*.AppImage
