@@ -135,17 +135,15 @@ rsync -av --delete --exclude .github --exclude .git --delete $BUILD/config $APPD
 log "Create FHS-like directory tree in $APPDIR"
 mkdir -p $APPDIR/usr/{bin,lib,share}
 
-log "Create data directory"
+log "Link data directory"
 # has to be a subdirectory of usr/bin/ so that the binary in that directory is able to find them
 # TODO: make Red Eclipse find the game data relative to the binary (e.g., ../share/games/redeclipse/data)
-mkdir -p $APPDIR/usr/bin/data/maps
+rsync -av --delete --exclude .github --exclude .git --link-dest=$(readlink -f $BUILD/data) $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
+
 
 log "Copy icons"
 mkdir -p $APPDIR/usr/share/icons/hicolor/128x128/ $APPDIR/usr/share/applications/
 cp $OLD_CWD/*.png $APPDIR/usr/share/icons/hicolor/128x128/
-
-log "Copy data"
-rsync -av --delete --exclude .github --exclude .git --delete $BUILD/data $APPDIR/usr/bin/
 
 log "Copy binaries"
 cp $BUILD/bin/amd64/redeclipse_linux $APPDIR/usr/bin/redeclipse || true
@@ -191,7 +189,7 @@ fi
 if [ $BUILD_SERVER -gt 0 ]; then
     log "Build server AppImage"
 
-    rm usr/lib/*
+    find usr/lib/ -type f -iname '*.so' -delete
     log "Run linuxdeployqt"
     for i in `seq 1 2`; do
         linuxdeployqt usr/share/applications/redeclipse-server.desktop
@@ -211,3 +209,6 @@ fi
 
 log "Fixing AppImages' permissions"
 chmod 0755 $OLD_CWD/out/*.AppImage
+
+log "Cleaning up"
+rm -r $APPDIR/
