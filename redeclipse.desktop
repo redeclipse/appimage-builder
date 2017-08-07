@@ -8,5 +8,5 @@ Exec=redeclipse
 TryExec=redeclipse
 Icon=redeclipse
 Terminal=false
-Categories=Games;
+Categories=Game;
 StartupNotify=true
