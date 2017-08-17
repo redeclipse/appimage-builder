@@ -105,7 +105,7 @@ chmod +x appimagetool-x86_64.AppImage
 ./appimagetool-x86_64.AppImage --appimage-extract
 
 appimagetool () {
-    $WORKSPACE/appimagetool/squashfs-root/AppRun $@
+    $WORKSPACE/appimagetool/squashfs-root/AppRun --comp=xz $@
 }
 
 
