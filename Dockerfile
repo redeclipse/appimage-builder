@@ -1,7 +1,5 @@
 FROM debian:oldstable
 
-MAINTAINER "TheAssassin <theassassin@users.noreply.github.com>"
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN sed -i 's/archive.ubuntu.com/ftp.fau.de/g' /etc/apt/sources.list && \

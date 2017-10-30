@@ -1,5 +1,5 @@
 #! /bin/sh
 
-export REDECLIPSE_BRANCH=AppImage-_BRANCH_
+export REDECLIPSE_BRANCH=_BRANCH_
 cd $(dirname $(readlink -f $0))/usr/bin/
 exec ./redeclipse $@

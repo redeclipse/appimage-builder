@@ -157,8 +157,8 @@ log "Create $OLD_CWD/out"
 mkdir -p $OLD_CWD/out
 
 
-CLIENT_URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse-${BRANCH}-x86_64.AppImage.zsync"
-SERVER_URL="zsync|https://download.assassinate-you.net/red-eclipse/appimage/latest/redeclipse-server-${BRANCH}-x86_64.AppImage.zsync"
+CLIENT_URL="zsync|https://redeclipse.net/appimage/redeclipse-${BRANCH}-x86_64.AppImage.zsync"
+SERVER_URL="zsync|https://redeclipse.net/appimage/redeclipse-server-${BRANCH}-x86_64.AppImage.zsync"
 
 glibc_needed()
 {
