@@ -157,8 +157,8 @@ log "Create $OLD_CWD/out"
 mkdir -p $OLD_CWD/out
 
 
-CLIENT_URL="zsync|https://redeclipse.net/appimage/redeclipse-${BRANCH}-x86_64.AppImage.zsync"
-SERVER_URL="zsync|https://redeclipse.net/appimage/redeclipse-server-${BRANCH}-x86_64.AppImage.zsync"
+CLIENT_URL="zsync|https://redeclipse.net/appimage/redeclipse-${BRANCH}-${ARCH}.AppImage.zsync"
+SERVER_URL="zsync|https://redeclipse.net/appimage/redeclipse-server-${BRANCH}-${ARCH}.AppImage.zsync"
 
 glibc_needed()
 {
@@ -183,13 +183,13 @@ if [ $BUILD_CLIENT -gt 0 ]; then
     sed -i "s/_BRANCH_/$BRANCH/g" $APPDIR/AppRun
 
     log "Run appimagetool"
-    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
+    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$BRANCH-$ARCH.AppImage)
 fi
 
 if [ $BUILD_SERVER -gt 0 ]; then
     log "Build server AppImage"
 
-    find usr/lib/ -type f -iname '*.so' -delete
+    #find usr/lib/ -type f -iname '*.so' -delete
     log "Run linuxdeployqt"
     for i in `seq 1 2`; do
         linuxdeployqt usr/share/applications/redeclipse-server.desktop
@@ -204,7 +204,7 @@ if [ $BUILD_SERVER -gt 0 ]; then
     sed -i 's|./redeclipse|./redeclipse-server|g' $APPDIR/AppRun
 
     log "Run appimagetool"
-    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$VERSION-$BRANCH-$COMMIT-$ARCH.$GLIBC_NEEDED.AppImage)
+    appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$BRANCH-$ARCH.AppImage)
 fi
 
 log "Fixing AppImages' permissions"
