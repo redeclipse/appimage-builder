@@ -1,6 +1,8 @@
 FROM debian:oldstable
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV BUILD=/source
+ENV NO_UPDATE=yes
 
 RUN sed -i 's/archive.ubuntu.com/ftp.fau.de/g' /etc/apt/sources.list && \
     apt-get update && \
@@ -19,7 +21,7 @@ RUN sed -i 's/archive.ubuntu.com/ftp.fau.de/g' /etc/apt/sources.list && \
 RUN addgroup --gid 1000 builder && \
     adduser --uid 1000 --gid 1000 --disabled-login --disabled-password \
     --gecos "" builder && \
-    install -d -o 1000 -g 1000 /workspace /out
+    install -d -o 1000 -g 1000 /workspace /out /source
 
 COPY AppRun /AppRun
 COPY redeclipse.desktop /redeclipse.desktop

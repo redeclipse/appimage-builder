@@ -27,6 +27,14 @@ trap "cleanup SIGTERM" SIGTERM
 trap "cleanup error" 0
 trap "cleanup" EXIT
 
+if [ -z "$1" ]; then
+    log "Usage: build-with-docker.sh <path to source and data>"
+    exit 1
+fi
+
+log "Using source: $1"
+test -e "$1/src/engine/version.h" || ( log "No version.h found"; exit 1 )
+
 log  "Building in a container..."
 
 randstr=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
@@ -45,6 +53,7 @@ set -xe
 docker run -it \
     --name $containerid \
     -v "$(readlink -f out/):/out" \
+    -v "$(readlink -f "$1"):/source" \
     -e VERSION -e BRANCH -e ARCH -e REPO_URL -e BUILD_CLIENT -e BUILD_SERVER \
     $imageid \
     bash -x /build-appimages.sh

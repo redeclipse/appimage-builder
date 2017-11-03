@@ -25,7 +25,7 @@ export COMMIT
 
 export WORKSPACE=$(readlink -f workspace)
 export APPDIR=$WORKSPACE/redeclipse.AppDir
-export BUILD=$WORKSPACE/build
+export BUILD=${BUILD:-$WORKSPACE/build}
 
 export BUILD_CLIENT=${BUILD_CLIENT:-1}
 export BUILD_SERVER=${BUILD_SERVER:-0}
@@ -46,19 +46,26 @@ mkdir -p $WORKSPACE $PREFIX $DOWNLOADS $BUILD
 
 
 cd "$BUILD"
-if [ ! -d .git ]; then
-    log "Clone Red Eclipse repository"
-    git clone https://github.com/red-eclipse/base.git -n .
-else
-    log "Update Red Eclipse repository"
-    git reset --hard HEAD
-    git pull
-fi
 
-log "Check out ${COMMIT:-$BRANCH}"
-git checkout ${COMMIT:-$BRANCH}
-log "Update Git submodules"
-git submodule update --init
+if [ -z "$NO_UPDATE" ]; then
+
+    if [ ! -d .git ]; then
+        log "Clone Red Eclipse repository"
+        git clone https://github.com/red-eclipse/base.git -n .
+    else
+        log "Update Red Eclipse repository"
+        git reset --hard HEAD
+        git pull
+    fi
+
+    log "Check out ${COMMIT:-$BRANCH}"
+    git checkout ${COMMIT:-$BRANCH}
+    log "Update Git submodules"
+    git submodule update --init
+
+else
+    log "Using passed source"
+fi
 
 if [ "$VERSION" == "" ]; then
     log "Parse version from source code"
