@@ -159,6 +159,9 @@ cp $BUILD/bin/amd64/redeclipse_server_linux $APPDIR/usr/bin/redeclipse-server ||
 log "Copy desktop files"
 cp $OLD_CWD/redeclipse.desktop $OLD_CWD/redeclipse-server.desktop $APPDIR/usr/share/applications/
 
+log "Copy metainfo files"
+mkdir -p $APPDIR/usr/share/metainfo
+cp $OLD_CWD/redeclipse.appdata.xml $APPDIR/usr/share/metainfo/
 
 log "Create $OLD_CWD/out"
 mkdir -p $OLD_CWD/out
