@@ -2,11 +2,11 @@
 Version=1.0
 Type=Application
 Name=Red Eclipse
-GenericName=Awesome FPS Game
-Comment=Play the best first-person shooter in the world! Free and open-source!
+GenericName=First-person shooter game
+Comment=First-person shooter with agile gameplay and built-in editor
 Exec=redeclipse
 TryExec=redeclipse
 Icon=redeclipse
 Terminal=false
-Categories=Game;
+Categories=Game;ActionGame;
 StartupNotify=true
