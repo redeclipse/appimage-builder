@@ -25,7 +25,7 @@ export COMMIT
 
 export WORKSPACE=$(readlink -f workspace)
 export APPDIR=$WORKSPACE/redeclipse.AppDir
-export BUILD=${BUILD:-$WORKSPACE/build}
+export BUILD=$(readlink -f ${BUILD:-$WORKSPACE/build})
 
 export BUILD_CLIENT=${BUILD_CLIENT:-1}
 export BUILD_SERVER=${BUILD_SERVER:-0}
@@ -116,9 +116,9 @@ appimagetool () {
 
 log "Build Red Eclipse binaries"
 pushd $BUILD/src
-make PLATFORM=linux64 PLATFORM_BIN=amd64 PLATFORM_BUILD=${PLATFORM_BUILD} PLATFORM_BRANCH=\"${PLATFORM_BRANCH}\" PLATFORM_REVISION=\"${PLATFORM_REVISION}\" CFLAGS=-m64 CXXFLAGS=-m64 LDFLAGS=-m64 -j$(nproc) clean install
+make clean
+make PLATFORM=linux64 PLATFORM_BIN=amd64 PLATFORM_BUILD=${PLATFORM_BUILD} PLATFORM_BRANCH=\"${PLATFORM_BRANCH}\" PLATFORM_REVISION=\"${PLATFORM_REVISION}\" CFLAGS=-m64 CXXFLAGS=-m64 LDFLAGS=-m64 -j$(nproc) install
 popd
-
 
 log "copying Red Eclipse data to AppDirs"
 
@@ -135,7 +135,13 @@ mkdir -p $APPDIR/usr/{bin,lib,share}
 log "Link data directory"
 # has to be a subdirectory of usr/bin/ so that the binary in that directory is able to find them
 # TODO: make Red Eclipse find the game data relative to the binary (e.g., ../share/games/redeclipse/data)
-rsync -av --delete --exclude .github --exclude .git --link-dest=$(readlink -f $BUILD/data) $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
+rm -rf $APPDIR/usr/bin/data
+# Dirs
+rsync -av --include '*/' --exclude '*' --exclude .github --exclude .git $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
+# Files
+pushd $BUILD/data/
+find . -type f -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
+popd
 
 
 log "Copy icons"
