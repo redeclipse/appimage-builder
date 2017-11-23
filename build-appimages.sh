@@ -40,10 +40,8 @@ fi
 notset="(parsed later from source code)"
 log "VERSION: ${VERSION:-$notset} -- BRANCH: $BRANCH"
 
-
 log "Prepare environment"
 mkdir -p $WORKSPACE $PREFIX $DOWNLOADS $BUILD
-
 
 cd "$BUILD"
 
@@ -118,15 +116,7 @@ appimagetool () {
 
 log "Build Red Eclipse binaries"
 pushd $BUILD/src
-
-mkdir -p build
-
-pushd build
-cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release || (rm -r * && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release)
-ninja -v install
-ninja -v clean
-popd
-
+make PLATFORM=linux64 PLATFORM_BIN=amd64 PLATFORM_BUILD=${PLATFORM_BUILD} PLATFORM_BRANCH=\"${PLATFORM_BRANCH}\" PLATFORM_REVISION=\"${PLATFORM_REVISION}\" CFLAGS=-m64 CXXFLAGS=-m64 LDFLAGS=-m64 -j$(nproc) clean install
 popd
 
 

@@ -9,6 +9,9 @@ services:
       - "BRANCH"
       - "ARCH"
       - "REPO_URL"
+      - "PLATFORM_BUILD"
+      - "PLATFORM_BRANCH"
+      - "PLATFORM_REVISION"
     cap_add:
       - "SYS_ADMIN"
     devices:

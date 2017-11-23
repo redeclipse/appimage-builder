@@ -13,7 +13,7 @@ install Docker.
 
 All you have to do is running the following command:
 
-    bash build-with-docker.sh
+    bash build-with-docker.sh <path to source and data>
 
 The AppImage is built securely in a fresh Docker container. After the script
 successfully ran, the AppImage is going to reside in a directory called `out/`

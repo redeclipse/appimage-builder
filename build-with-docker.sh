@@ -55,5 +55,6 @@ docker run -it \
     -v "$(readlink -f out/):/out" \
     -v "$(readlink -f "$1"):/source" \
     -e VERSION -e BRANCH -e ARCH -e REPO_URL -e BUILD_CLIENT -e BUILD_SERVER \
+    -e PLATFORM_BUILD -e PLATFORM_BRANCH -e PLATFORM_REVISION \
     $imageid \
-    bash -x /build-appimages.sh
+    bash -x /build-appimages.sh || exit 1
