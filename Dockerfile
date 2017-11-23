@@ -27,6 +27,7 @@ COPY AppRun /AppRun
 COPY redeclipse.desktop /redeclipse.desktop
 COPY redeclipse-server.desktop /redeclipse-server.desktop
 COPY redeclipse.png /redeclipse.png
+COPY redeclipse.appdata.xml /redeclipse.appdata.xml
 COPY build-appimages.sh /build-appimages.sh
 COPY *.ignore /
 
