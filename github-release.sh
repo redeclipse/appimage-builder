@@ -6,41 +6,45 @@ RELEASE_NAME=appimage_continuous_$BRANCH
 
 [ -n "$GITHUB_TOKEN" ] || ( echo "No github token"; exit 1 )
 
-# Info regarding release that already exists.
-release_url="https://api.github.com/repos/$REPO_SLUG/releases/tags/$RELEASE_NAME"
-echo "Getting the release ID..."
-echo "release_url: $release_url"
-release_infos=$(curl -XGET --header "Authorization: token ${GITHUB_TOKEN}" "${release_url}")
-echo "release_infos: $release_infos"
-release_id=$(echo "$release_infos" | jq -r '.id')
-
 echo "Releasing..."
 
-# Delete release if required.
-if [ x"$release_id" != "x" ]; then
-    delete_url="https://api.github.com/repos/$REPO_SLUG/releases/$release_id"
-    echo "Deleting the release..."
+clear_tmp() {
+    # Info regarding temporary release that already exists.
+    old_tmp_releaseurl="https://api.github.com/repos/$REPO_SLUG/releases/tags/$RELEASE_NAME.tmp"
+    echo "Getting the release ID..."
+    echo "old_tmp_releaseurl: $old_tmp_releaseurl"
+    old_tmp_releaseinfos=$(curl -XGET --header "Authorization: token ${GITHUB_TOKEN}" "${old_tmp_releaseurl}")
+    echo "old_tmp_releaseinfos: $old_tmp_releaseinfos"
+    old_tmp_releaseid=$(echo "$old_tmp_releaseinfos" | jq -r '.id')
+
+    # Delete release if required.
+    if [ x"$old_tmp_releaseid" != "x" ]; then
+        delete_url="https://api.github.com/repos/$REPO_SLUG/releases/$old_tmp_releaseid"
+        echo "Deleting the release..."
+        echo "delete_url: $delete_url"
+        curl -XDELETE \
+            --header "Authorization: token ${GITHUB_TOKEN}" \
+            "${delete_url}"
+    fi
+
+    # Delete tag
+    echo "Deleting the tag..."
+    delete_url="https://api.github.com/repos/$REPO_SLUG/git/refs/tags/$RELEASE_NAME.tmp"
     echo "delete_url: $delete_url"
     curl -XDELETE \
         --header "Authorization: token ${GITHUB_TOKEN}" \
         "${delete_url}"
-fi
+}
 
-# Delete tag
-echo "Deleting the tag..."
-delete_url="https://api.github.com/repos/$REPO_SLUG/git/refs/tags/$RELEASE_NAME"
-echo "delete_url: $delete_url"
-curl -XDELETE \
-    --header "Authorization: token ${GITHUB_TOKEN}" \
-    "${delete_url}"
+clear_tmp
 
 # Create the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME"'","target_commitish": "'"$BRANCH"'","name": "'"Continuous build"'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"$BRANCH"'","name": "'"Continuous build"'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
 echo "$release_infos"
 release_id=$(echo "$release_infos" | jq -r '.id')
 
 # Get the upload url, should use URI Templates here.
-upload_url="https://uploads.github.com/repos/shacknetisp/test-deploy-repo/releases/$release_id/assets"
+upload_url="https://uploads.github.com/repos/$REPO_SLUG/releases/$release_id/assets"
 echo "upload_url: $upload_url"
 
 release_url=$(echo "$release_infos" | jq -r '.url')
@@ -71,6 +75,34 @@ for FILE in *; do
 done
 popd
 
+# Info regarding release that already exists.
+old_release_url="https://api.github.com/repos/$REPO_SLUG/releases/tags/$RELEASE_NAME"
+echo "Getting the release ID..."
+echo "old_release_url: $old_release_url"
+old_release_infos=$(curl -XGET --header "Authorization: token ${GITHUB_TOKEN}" "${old_release_url}")
+echo "old_release_infos: $old_release_infos"
+old_release_id=$(echo "$old_release_infos" | jq -r '.id')
+
+# Delete release if required.
+if [ x"$old_release_id" != "x" ]; then
+    delete_url="https://api.github.com/repos/$REPO_SLUG/releases/$old_release_id"
+    echo "Deleting the release..."
+    echo "delete_url: $delete_url"
+    curl -XDELETE \
+        --header "Authorization: token ${GITHUB_TOKEN}" \
+        "${delete_url}"
+fi
+
+# Delete tag
+echo "Deleting the tag..."
+delete_url="https://api.github.com/repos/$REPO_SLUG/git/refs/tags/$RELEASE_NAME"
+echo "delete_url: $delete_url"
+curl -XDELETE \
+    --header "Authorization: token ${GITHUB_TOKEN}" \
+    "${delete_url}"
+
 # Finish the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false}' "$release_url")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false, "tag_name": "'"$RELEASE_NAME"'"}' "$release_url")
 echo "$release_infos"
+
+clear_tmp
