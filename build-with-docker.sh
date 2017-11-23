@@ -42,7 +42,7 @@ containerid=redeclipse-appimage-build-$randstr
 imageid="redeclipse-appimage-build"
 
 log "Building Docker container"
-(set -xe; docker build -t $imageid .)
+(set -xe; docker build -t $imageid --build-arg user_id=$(id -u) --build-arg group_id=$(id -g) .)
 
 export VERSION BRANCH ARCH REPO_URL BUILD_CLIENT BUILD_SERVER
 

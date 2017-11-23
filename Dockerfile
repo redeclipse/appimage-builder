@@ -1,5 +1,8 @@
 FROM debian:oldstable
 
+ARG user_id
+ARG group_id
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV BUILD=/source
 ENV NO_UPDATE=yes
@@ -18,10 +21,10 @@ RUN sed -i 's/archive.ubuntu.com/ftp.fau.de/g' /etc/apt/sources.list && \
         libgl1-mesa-dri libgl1-mesa-glx libglapi-mesa libgles2-mesa libglu1-mesa \
         libtinfo5
 
-RUN addgroup --gid 1000 builder && \
-    adduser --uid 1000 --gid 1000 --disabled-login --disabled-password \
+RUN addgroup --gid $group_id builder && \
+    adduser --uid $user_id --gid $group_id --disabled-login --disabled-password \
     --gecos "" builder && \
-    install -d -o 1000 -g 1000 /workspace /out /source
+    install -d -o $user_id -g $group_id /workspace /out /source
 
 COPY AppRun /AppRun
 COPY redeclipse.desktop /redeclipse.desktop
@@ -31,4 +34,4 @@ COPY redeclipse.appdata.xml /redeclipse.appdata.xml
 COPY build-appimages.sh /build-appimages.sh
 COPY *.ignore /
 
-USER 1000
+USER $user_id
