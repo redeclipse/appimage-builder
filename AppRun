@@ -41,14 +41,14 @@ updatecommand() {
 
 if [ -n "$REDECLIPSE_APPIMAGE_NO_UPDATE" ]; then
     if [ "$SERVER" = "no" ]; then
-        exec ./redeclipse $@
+        ./redeclipse $@
     else
-        exec ./redeclipse-server $@
+        ./redeclipse-server $@
     fi
 else
     OLD_CWD="$(pwd)"
     cd "$TEMP_D"
     updatecommand "$OLD_CWD/appimageupdatetool.AppImage" "$APPIMAGE"
     [ -e "$APPIMAGE.zs-old" ] && rm "$APPIMAGE.zs-old"
-    REDECLIPSE_APPIMAGE_NO_UPDATE=yes exec "$APPIMAGE"
+    REDECLIPSE_APPIMAGE_NO_UPDATE=yes "$APPIMAGE"
 fi
