@@ -151,6 +151,7 @@ cp $OLD_CWD/*.png $APPDIR/usr/share/icons/hicolor/128x128/
 log "Copy binaries"
 cp $BUILD/bin/amd64/redeclipse_linux $APPDIR/usr/bin/redeclipse || true
 cp $BUILD/bin/amd64/redeclipse_server_linux $APPDIR/usr/bin/redeclipse-server || true
+cp $OLD_CWD/*.AppImage $APPDIR/usr/bin/
 
 log "Copy desktop files"
 cp $OLD_CWD/redeclipse.desktop $OLD_CWD/redeclipse-server.desktop $APPDIR/usr/share/applications/
@@ -207,7 +208,7 @@ if [ $BUILD_SERVER -gt 0 ]; then
     sed -i "s/_BRANCH_/$BRANCH/g" $APPDIR/AppRun
 
     log "Patch server AppRun script"
-    sed -i 's|./redeclipse|./redeclipse-server|g' $APPDIR/AppRun
+    sed -i 's|SERVER=no|SERVER=yes|g' $APPDIR/AppRun
 
     log "Run appimagetool"
     appimagetool -n -v --exclude-file $OLD_CWD/redeclipse-server.ignore -u "$SERVER_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-server-$BRANCH-$ARCH.AppImage)
