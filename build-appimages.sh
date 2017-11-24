@@ -30,7 +30,6 @@ export BUILD=$(readlink -f ${BUILD:-$WORKSPACE/build})
 export BUILD_CLIENT=${BUILD_CLIENT:-1}
 export BUILD_SERVER=${BUILD_SERVER:-0}
 
-
 if [ $BUILD_CLIENT -le 0 ] && [ $BUILD_SERVER -le 0 ]; then
     echo "$(tput bold)$(tput setaf 1)**Error** you have to activate at least one build, either BUILD_CLIENT=1, BUILD_SERVER=1 or both!$(tput sgr0)"
     exit 1
@@ -75,18 +74,15 @@ export VERSION
 
 log "Version: $VERSION"
 
-
 # fall back to HEAD when no commit is given
 COMMIT=${COMMIT:-$(git rev-parse HEAD)}
 
 log "Commit: $COMMIT"
 
-
 # shorten commit if necessary
 COMMIT=$(git rev-parse --short $COMMIT)
 
 export COMMIT
-
 
 log "Download and set up linuxdeployqt"
 
@@ -100,7 +96,6 @@ linuxdeployqt () {
     $WORKSPACE/linuxdeployqt/squashfs-root/AppRun $@ -bundle-non-qt-libs -verbose=1
 }
 
-
 log "Download and set up appimagetool"
 
 mkdir -p $WORKSPACE/appimagetool
@@ -112,7 +107,6 @@ chmod +x appimagetool-x86_64.AppImage
 appimagetool () {
     $WORKSPACE/appimagetool/squashfs-root/AppRun --comp=xz $@
 }
-
 
 log "Build Red Eclipse binaries"
 pushd $BUILD/src
@@ -142,7 +136,6 @@ rsync -av --include '*/' --exclude '*' --exclude .github --exclude .git $(readli
 pushd $BUILD/data/
 find . -type f \( ! -regex '.*/\..*' \) -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
 popd
-
 
 log "Copy icons"
 mkdir -p $APPDIR/usr/share/icons/hicolor/128x128/ $APPDIR/usr/share/applications/
