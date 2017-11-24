@@ -140,7 +140,7 @@ rm -rf $APPDIR/usr/bin/data
 rsync -av --include '*/' --exclude '*' --exclude .github --exclude .git $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
 # Files
 pushd $BUILD/data/
-find . -type f -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
+find . -type f \( ! -regex '.*/\..*' \) -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
 popd
 
 
