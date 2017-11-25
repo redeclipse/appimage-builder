@@ -21,7 +21,7 @@ updatecommand() {
     echo "$@" > "$TEMP_U"
     echo "echo \$? > \"\$TEMP_E\"" >> "$TEMP_U"
     export TEMP_E
-    if tty > /dev/null || [ -n "$REDECLIPSE_APPIMAGE_NOTERM" ]; then
+    if [ "$SERVER" = "yes" ] || tty > /dev/null || [ -n "$REDECLIPSE_APPIMAGE_NOTERM" ]; then
         eval /bin/sh "$TEMP_U"
     else
         if [ -n "$REDECLIPSE_APPIMAGE_TERM" ]; then
