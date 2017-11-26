@@ -1,9 +1,9 @@
 #! /bin/bash
 # Portions of this script from https://github.com/probonopd/uploadtool Copyright 2016 Simon Peter under the MIT License
 
-REPO_SLUG=red-eclipse/deploy
 RELEASE_NAME=appimage_continuous_$BRANCH
 
+[ -n "$REPO_SLUG" ] || ( echo "No repo slug"; exit 1 )
 [ -n "$GITHUB_TOKEN" ] || ( echo "No github token"; exit 1 )
 
 echo "Releasing..."
@@ -39,7 +39,7 @@ clear_tmp() {
 clear_tmp
 
 # Create the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"master"'","name": "'"Continuous build"'","body": "'"AppImages built from the $BRANCH branch.\n\n* [How to use these AppImages](https://redeclipse.net/wiki/How_to_Install_Red_Eclipse#AppImage)\n* [About the AppImage format and project](https://appimage.org)\n\nThe \`.zsync\` files are used automatically for update information."'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"master"'","name": "'"Temp:$PLATFORM_BUILD"'","body": "'"Temporary release while uploading build $PLATFORM_BUILD."'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
 echo "$release_infos"
 release_id=$(echo "$release_infos" | jq -r '.id')
 
@@ -102,7 +102,7 @@ curl -XDELETE \
     "${delete_url}"
 
 # Finish the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false, "tag_name": "'"$RELEASE_NAME"'"}' "$release_url")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false, "body": "'"AppImages built from the $BRANCH branch.\n\n* [How to use these AppImages](https://redeclipse.net/wiki/How_to_Install_Red_Eclipse#AppImage)\n* [About the AppImage format and project](https://appimage.org)\n\nThe \`.zsync\` files are used automatically for update information."'","tag_name": "'"$RELEASE_NAME"'"}' "$release_url")
 echo "$release_infos"
 
 clear_tmp
