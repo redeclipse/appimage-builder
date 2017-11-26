@@ -39,7 +39,7 @@ clear_tmp() {
 clear_tmp
 
 # Create the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"$BRANCH"'","name": "'"Continuous build"'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"$BRANCH"'","name": "'"Continuous Build"'","body": "'"AppImages built from the $BRANCH branch.\n\n* [How to use these AppImages](https://redeclipse.net/wiki/How_to_Install_Red_Eclipse#AppImage)\n* [About the AppImage format and project](https://appimage.org)\n\nThe \`.zsync\` files are used automatically for update information."'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
 echo "$release_infos"
 release_id=$(echo "$release_infos" | jq -r '.id')
 
