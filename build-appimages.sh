@@ -88,9 +88,7 @@ log "Download and set up linuxdeployqt"
 
 mkdir -p $WORKSPACE/linuxdeployqt
 cd $WORKSPACE/linuxdeployqt
-wget -cN https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-chmod +x linuxdeployqt-continuous-x86_64.AppImage
-./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
+$OLD_CWD/linuxdeployqt.AppImage --appimage-extract
 
 linuxdeployqt () {
     $WORKSPACE/linuxdeployqt/squashfs-root/AppRun $@ -bundle-non-qt-libs -verbose=1
@@ -100,9 +98,7 @@ log "Download and set up appimagetool"
 
 mkdir -p $WORKSPACE/appimagetool
 cd $WORKSPACE/appimagetool
-wget -cN https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-chmod +x appimagetool-x86_64.AppImage
-./appimagetool-x86_64.AppImage --appimage-extract
+$OLD_CWD/appimagetool.AppImage --appimage-extract
 
 appimagetool () {
     $WORKSPACE/appimagetool/squashfs-root/AppRun --comp=xz $@
