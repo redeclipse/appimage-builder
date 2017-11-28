@@ -10,8 +10,7 @@ TEMP_U="$TEMP_D/u.sh"
 TEMP_E="$TEMP_D/e"
 
 cleanup() {
-    rm -r "$TEMP_D"
-    echo "done"
+    rm -rf "$TEMP_D"
     exit
 }
 
