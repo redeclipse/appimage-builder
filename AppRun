@@ -5,23 +5,29 @@ cd $(dirname $(readlink -f $0))/usr/bin/
 
 UC=0
 SERVER=no
+REMOTE_COMMIT_URL="https://redeclipse.net/appimage/_BRANCH_/_commit.txt"
+
+# Temporary directory for updates.
 TEMP_D="$(mktemp -d)"
 TEMP_U="$TEMP_D/u.sh"
 TEMP_E="$TEMP_D/e"
 
+# Remove the temporary directory.
 cleanup() {
     rm -rf "$TEMP_D"
     exit
 }
-
 trap "cleanup" 0 2 3 15
 
 updatecommand() {
+    # Build the script.
     echo "$@" > "$TEMP_U"
     echo "echo \$? > \"\$TEMP_E\"" >> "$TEMP_U"
     export TEMP_E
+    # Run directly?
     if [ "$SERVER" = "yes" ] || tty > /dev/null || [ -n "$REDECLIPSE_APPIMAGE_NOTERM" ]; then
         eval /bin/sh "$TEMP_U"
+    # Use a terminal if possible.
     else
         if [ -n "$REDECLIPSE_APPIMAGE_TERM" ]; then
             eval "$REDECLIPSE_APPIMAGE_TERM" -e /bin/sh "$TEMP_U"
@@ -33,10 +39,22 @@ updatecommand() {
             eval /bin/sh "$TEMP_U"
         fi
     fi
+    # Exit with the updater command's exit code.
     return $(cat "$TEMP_E")
 }
 
-if [ -n "$REDECLIPSE_APPIMAGE_NO_UPDATE" ]; then
+# If possible, check if we have the latest deployed commit. No need for the full check then.
+# Timeouts are low, if the commands fail due to a fluke we still fall back to the full updater.
+REMOTE_COMMIT=
+if [ -z "$REDECLIPSE_APPIMAGE_NO_UPDATE" ]; then
+    if which wget > /dev/null; then
+        REMOTE_COMMIT=$(wget --timeout=5 --quiet "$REMOTE_COMMIT_URL" -O -)
+    elif which curl > /dev/null; then
+        REMOTE_COMMIT=$(curl -m 5 -L -f "$REMOTE_COMMIT_URL")
+    fi
+fi
+
+if [ -n "$REDECLIPSE_APPIMAGE_NO_UPDATE" ] || [ x"$REMOTE_COMMIT" = x"_COMMIT_" ]; then
     if [ "$SERVER" = "no" ]; then
         ./redeclipse $@
     else
@@ -47,5 +65,5 @@ else
     cd "$TEMP_D"
     updatecommand "$OLD_CWD/appimageupdatetool.AppImage" "$APPIMAGE"
     [ -e "$APPIMAGE.zs-old" ] && rm "$APPIMAGE.zs-old"
-    REDECLIPSE_APPIMAGE_NO_UPDATE=yes "$APPIMAGE"
+    REDECLIPSE_APPIMAGE_NO_UPDATE=yes "$APPIMAGE" "$@"
 fi

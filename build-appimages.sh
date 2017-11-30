@@ -81,6 +81,7 @@ log "Commit: $COMMIT"
 
 # shorten commit if necessary
 COMMIT=$(git rev-parse --short $COMMIT)
+LCOMMIT=$(git rev-parse $COMMIT)
 
 export COMMIT
 
@@ -177,6 +178,7 @@ if [ $BUILD_CLIENT -gt 0 ]; then
     rm $APPDIR/AppRun
     cp $OLD_CWD/AppRun $APPDIR/
     sed -i "s/_BRANCH_/$BRANCH/g" $APPDIR/AppRun
+    sed -i "s/_COMMIT_/$LCOMMIT/g" $APPDIR/AppRun
 
     log "Run appimagetool"
     appimagetool -n -v --exclude-file $OLD_CWD/redeclipse.ignore -u "$CLIENT_URL" $APPDIR $(readlink -f $OLD_CWD/out/redeclipse-$BRANCH-$ARCH.AppImage)
@@ -195,6 +197,7 @@ if [ $BUILD_SERVER -gt 0 ]; then
     rm $APPDIR/AppRun
     cp $OLD_CWD/AppRun $APPDIR/
     sed -i "s/_BRANCH_/$BRANCH/g" $APPDIR/AppRun
+    sed -i "s/_COMMIT_/$LCOMMIT/g" $APPDIR/AppRun
 
     log "Patch server AppRun script"
     sed -i 's|SERVER=no|SERVER=yes|g' $APPDIR/AppRun
