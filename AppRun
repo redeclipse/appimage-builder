@@ -31,9 +31,9 @@ updatecommand() {
     else
         if [ -n "$REDECLIPSE_APPIMAGE_TERM" ]; then
             eval "$REDECLIPSE_APPIMAGE_TERM" -e /bin/sh "$TEMP_U"
-        elif which xterm > /dev/null; then
+        elif which xterm > /dev/null 2>&1; then
             xterm -e /bin/sh "$TEMP_U"
-        elif which x-terminal-emulator > /dev/null; then
+        elif which x-terminal-emulator > /dev/null 2>&1; then
             x-terminal-emulator -e /bin/sh "$TEMP_U"
         else
             eval /bin/sh "$TEMP_U"
@@ -47,9 +47,9 @@ updatecommand() {
 # Timeouts are low, if the commands fail due to a fluke we still fall back to the full updater.
 REMOTE_COMMIT=
 if [ -z "$REDECLIPSE_APPIMAGE_NO_UPDATE" ]; then
-    if which wget > /dev/null; then
+    if which wget > /dev/null 2>&1; then
         REMOTE_COMMIT=$(wget --timeout=5 --quiet "$REMOTE_COMMIT_URL" -O -)
-    elif which curl > /dev/null; then
+    elif which curl > /dev/null 2>&1; then
         REMOTE_COMMIT=$(curl -m 5 -L -f "$REMOTE_COMMIT_URL")
     fi
 fi
