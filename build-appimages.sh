@@ -124,15 +124,19 @@ log "Create FHS-like directory tree in $APPDIR"
 mkdir -p $APPDIR/usr/{bin,lib,share}
 
 log "Link data directory"
-# has to be a subdirectory of usr/bin/ so that the binary in that directory is able to find them
-# TODO: make Red Eclipse find the game data relative to the binary (e.g., ../share/games/redeclipse/data)
-rm -rf $APPDIR/usr/bin/data
-# Dirs
-rsync -av --include '*/' --exclude '*' --exclude .github --exclude .git $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
-# Files
-pushd $BUILD/data/
-find . -type f \( ! -regex '.*/\..*' \) -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
-popd
+if [ -f /.dockerenv ]; then
+    rsync -av --delete --exclude .github --exclude .git --link-dest=$(readlink -f $BUILD/data) $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
+else
+    # has to be a subdirectory of usr/bin/ so that the binary in that directory is able to find them
+    # TODO: make Red Eclipse find the game data relative to the binary (e.g., ../share/games/redeclipse/data)
+    rm -rf $APPDIR/usr/bin/data
+    # Dirs
+    rsync -av --include '*/' --exclude '*' --exclude .github --exclude .git $(readlink -f $BUILD/data) $(readlink -f $APPDIR/usr/bin/)
+    # Files
+    pushd $BUILD/data/
+    find . -type f \( ! -regex '.*/\..*' \) -exec ln -v {} $(readlink -f $APPDIR/usr/bin/data)/{} \;
+    popd
+fi
 
 log "Copy icons"
 mkdir -p $APPDIR/usr/share/icons/hicolor/128x128/ $APPDIR/usr/share/applications/
