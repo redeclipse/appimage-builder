@@ -38,7 +38,7 @@ test -e "$1/src/engine/version.h" || ( log "No version.h found"; exit 1 )
 log  "Building in a container..."
 
 randstr=$RANDOM
-containerid=redeclipse-appimage-build-$randstr
+containerid=redeclipse-appimage-build-$BRANCH-$randstr
 imageid="redeclipse-appimage-build"
 
 log "Building Docker container"
