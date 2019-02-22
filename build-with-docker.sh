@@ -37,7 +37,7 @@ test -e "$1/src/engine/version.h" || ( log "No version.h found"; exit 1 )
 
 log  "Building in a container..."
 
-randstr=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+randstr=$RANDOM
 containerid=redeclipse-appimage-build-$randstr
 imageid="redeclipse-appimage-build"
 
@@ -54,6 +54,9 @@ docker run -it \
     --name $containerid \
     -v "$(readlink -f out/):/out" \
     -v "$(readlink -f "$1"):/source" \
+    -v "$(readlink -f appimagetool.AppImage):/appimagetool.AppImage" \
+    -v "$(readlink -f appimageupdatetool.AppImage):/appimageupdatetool.AppImage" \
+    -v "$(readlink -f linuxdeployqt.AppImage):/linuxdeployqt.AppImage" \
     -e VERSION -e BRANCH -e ARCH -e REPO_URL -e BUILD_CLIENT -e BUILD_SERVER \
     -e PLATFORM_BUILD -e PLATFORM_BRANCH -e PLATFORM_REVISION \
     $imageid \
