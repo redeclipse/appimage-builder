@@ -109,7 +109,7 @@ curl -XDELETE \
     "${delete_url}"
 
 # Finish the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false, "name": "'"Continuous build: $BRANCH"'","body": "'"AppImages built from the \`$BRANCH\` branch.\n\n* [How to use these AppImages](https://redeclipse.net/wiki/How_to_Install_Red_Eclipse#AppImage)\n* [About the AppImage format and project](https://appimage.org)\n\nThe \`.zsync\` and \`_commit.txt\` files are used automatically for update information."'","tag_name": "'"$RELEASE_NAME"'"}' "$release_url")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"draft": false, "name": "'"Continuous build: $BRANCH"'","body": "'"AppImages built from the \`$BRANCH\` branch.\n\n* [How to use these AppImages](https://redeclipse.net/docs/AppImages)\n* [About the AppImage format and project](https://appimage.org)\n\nThe \`.zsync\` and \`_commit.txt\` files are used automatically for update information."'","tag_name": "'"$RELEASE_NAME"'"}' "$release_url")
 echo "$release_infos"
 
 clear_tmp
