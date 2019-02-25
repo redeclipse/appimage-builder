@@ -39,7 +39,7 @@ clear_tmp() {
 clear_tmp
 
 # Create the release.
-release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"master"'","name": "'"Temp:$PLATFORM_BUILD"'","body": "'"Temporary release while uploading build $PLATFORM_BUILD."'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
+release_infos=$(curl -H "Authorization: token ${GITHUB_TOKEN}" --data '{"tag_name": "'"$RELEASE_NAME.tmp"'","target_commitish": "'"master"'","name": "'"Temp:$BRANCH:$PLATFORM_BUILD"'","body": "'"Temporary release while uploading $BRANCH build $PLATFORM_BUILD."'","draft": false, "prerelease": true}' "https://api.github.com/repos/$REPO_SLUG/releases")
 echo "$release_infos"
 release_id=$(echo "$release_infos" | jq -r '.id')
 
