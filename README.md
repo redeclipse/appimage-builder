@@ -61,7 +61,7 @@ influenced in some way.
 | -------- | --------------------------------------- | ----------- |
 |`BRANCH`  | `stable`                                | Git branch to be built. Can be set to e.g. `master` for development builds. |
 |`ARCH`    | `x86_64`                                | Architecture to be built. Only `x86_64` builds are implemented at the moment. You should **not** change this. |
-|`REPO_URL`| https://github.com/red-eclipse/base.git | Repository URL. If you want to build an AppImage for your own fork, you can change this to another git repository's URL. |
+|`REPO_URL`| https://github.com/redeclipse/base.git | Repository URL. If you want to build an AppImage for your own fork, you can change this to another git repository's URL. |
 |`VERSION` | (parsed from source code)               | Red Eclipse version. There is actually no use case of overriding this variable, the correct value is parsed from `version.h`. |
 |`COMMIT`  | (read from local Git clone)             | Commit ID to check out. Continuous integration builds should override this to make sure the correct version is fetched from GitHub. If not set, it is fetched using `git rev-parse HEAD`. |
 

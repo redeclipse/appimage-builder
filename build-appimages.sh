@@ -18,7 +18,7 @@ export LANGUAGE=C
 
 export BRANCH=${BRANCH:-stable}
 export ARCH=${ARCH:-x86_64}
-export REPO_URL=${REPO_URL:-https://github.com/red-eclipse/base.git}
+export REPO_URL=${REPO_URL:-https://github.com/redeclipse/base.git}
 # parsed automatically unless they are already set
 export VERSION
 export COMMIT
@@ -48,7 +48,7 @@ if [ -z "$NO_UPDATE" ]; then
 
     if [ ! -d .git ]; then
         log "Clone Red Eclipse repository"
-        git clone https://github.com/red-eclipse/base.git -n .
+        git clone https://github.com/redeclipse/base.git -n .
     else
         log "Update Red Eclipse repository"
         git reset --hard HEAD
